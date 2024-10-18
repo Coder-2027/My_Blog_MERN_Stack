@@ -31,6 +31,7 @@ function Signup() {
       
       if(data && data.success === false){
         // console.log("data.messege ", data.messege);
+        setLoading(false);
         return setError(data.messege);
       }
 
@@ -41,11 +42,12 @@ function Signup() {
           email: '',
         });
       }
+      setLoading(false);
       navigate('/signin')
     } catch (error) {
+      setLoading(false);
       setError(error.message);
     }
-    setLoading(false);
   };
 
   return (
@@ -85,7 +87,7 @@ function Signup() {
             <Button gradientDuoTone="purpleToPink" type="submit" disabled={loading}>
               {
                 loading ? (<><Spinner size='sm'/>
-                <span className='pl-3'>Loading...</span></>) : ('Sing Up')
+                <span className='pl-3'>Loading...</span></>) : ('Sign Up')
               }
             </Button>
           </form>
