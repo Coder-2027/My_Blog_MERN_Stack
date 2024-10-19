@@ -7,6 +7,7 @@ import About from './pages/About'
 import Home from './pages/Home'
 import Header from './components/Header'
 import FooterComp from './components/Footer'
+import PrivateRoute from './components/PrivateRoute'
 
 function App() {
 
@@ -20,7 +21,9 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/projects" element={<Projects />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route element={<PrivateRoute/>}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
         </Routes>
         <FooterComp/>
       </BrowserRouter>
