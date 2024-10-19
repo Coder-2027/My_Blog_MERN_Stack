@@ -31,14 +31,14 @@ function Signin() {
         body: JSON.stringify(formData),
       })
       const data = await res.json();
-      
+      // console.log(data.user);
       if(data && data.success === false){
         // console.log("data.messege ", data.messege);
         return dispatch(signInFailure(data.messege))
       }
 
       if(data){
-        dispatch(signInSuccess(data));
+        dispatch(signInSuccess(data.user));
         navigate('/')
       }
     } catch (error) {
