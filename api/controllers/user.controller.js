@@ -2,6 +2,7 @@ import bcryptjs from "bcryptjs";
 import { User } from "../models/user.model.js";
 
 export const updateUser = async (req, res, next) => {
+  // console.log("Inside updateUser");
   if (req.user.userId !== req.params.userId) {
     return res
       .status(401)
@@ -10,7 +11,7 @@ export const updateUser = async (req, res, next) => {
         message: "You are not allowed to update this user",
       });
   }
-
+  // console.log("Hello");
   if (req.body.password) {
     if (req.body.password.length < 6) {
       return res
