@@ -76,8 +76,9 @@ export const updateUser = async (req, res, next) => {
 };
 
 export const deleteUser = async (req, res, next) => {
-  // console.log(req.user);
+  console.log(req.user);
   // console.log(req.params);
+  // console.log("Inside deleteUser");
   if(req.user.userId != req.params.userId){
     return res.status(404).json({
       success: false,
@@ -86,7 +87,7 @@ export const deleteUser = async (req, res, next) => {
   }
 
   try {
-    await User.findByIdAndDelete(req.user.id);
+    await User.findByIdAndDelete(req.user.userId);
     return res.status(200).json({ success: true, message: "User has been deleted" });
   } catch (error) {
     next(error);
