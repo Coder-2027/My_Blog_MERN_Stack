@@ -17,13 +17,13 @@ import {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
-  signoutSuccess
+  signoutSuccess,
 } from "../redux/user/userSlice.js";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import {useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 
 function DashProfile() {
-  const { currentUser, error } = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   // console.log(currentUser.profilePicture);
 
   const [imageFile, setImageFile] = useState(null);
@@ -145,15 +145,15 @@ function DashProfile() {
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
-  }
+  };
 
   const handleSignout = async () => {
     try {
-      const res = await fetch('/api/v1/user/signout', {
-        method: 'POST',
-      })
+      const res = await fetch("/api/v1/user/signout", {
+        method: "POST",
+      });
       const data = await res.json();
-      if(!res.ok){
+      if (!res.ok) {
         console.log(data.message);
       } else {
         // console.log("error signing out ", data.message);
@@ -163,7 +163,7 @@ function DashProfile() {
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
@@ -236,8 +236,9 @@ function DashProfile() {
           gradientDuoTone="purpleToBlue"
           outline
           onClick={handleSubmit}
+          disabled={imageFileUploading || loading}
         >
-          Update
+          {loading ? 'Loading...' : 'Update'}
         </Button>
       </form>
 
@@ -245,7 +246,9 @@ function DashProfile() {
         <span className="cursor-pointer" onClick={() => setShowModal(true)}>
           Delete Account
         </span>
-        <span className="cursor-pointer" onClick={handleSignout}>Sign Out</span>
+        <span className="cursor-pointer" onClick={handleSignout}>
+          Sign Out
+        </span>
       </div>
 
       {updateUserSuccess && (
@@ -266,23 +269,41 @@ function DashProfile() {
         </Alert>
       )}
 
+      {currentUser.isAdmin && (
+        <Link to={"/create-post"}>
+          <Button
+            type="submit"
+            gradientDuoTone="purpleToBlue"
+            className="w-full mt-5"
+          >
+            Create a Post
+          </Button>
+        </Link>
+      )}
+
       <Modal
         show={showModal}
         onClose={() => setShowModal(false)}
         popup
         size="md"
       >
-        <Modal.Header/>
-          <Modal.Body>
-            <div className="text-center">
-              <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto"/>
-              <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">Are you sure you want to delete your account ?</h3>
-              <div className="flex justify-center gap-4">
-                <Button color="failure" onClick={handleDeleteUser}>Yes I am sure</Button>
-                <Button color="gray" onClick={() => setShowModal(false)}>No, Cancel</Button>
-              </div>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete your account ?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleDeleteUser}>
+                Yes I am sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No, Cancel
+              </Button>
             </div>
-          </Modal.Body>
+          </div>
+        </Modal.Body>
       </Modal>
     </div>
   );
