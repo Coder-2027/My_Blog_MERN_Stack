@@ -93,3 +93,11 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const signout = (req, res, next) => {
+  try {
+    return res.clearCookie('access_Token').status(200).json('User has been signed out')
+  } catch (error) {
+    next(error)
+  }
+}
