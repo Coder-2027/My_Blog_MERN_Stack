@@ -103,7 +103,7 @@ export const signout = (req, res, next) => {
 }
 
 export const getUsers = async (req, res, next) => {
-  // console.log(req.query);
+  // console.log("Hello");
   if(!req.user.isAdmin){
     return res.status(500).json({
       success: false,
