@@ -238,7 +238,7 @@ function DashProfile() {
           onClick={handleSubmit}
           disabled={imageFileUploading || loading}
         >
-          {loading ? 'Loading...' : 'Update'}
+          {loading ? "Loading..." : "Update"}
         </Button>
       </form>
 
