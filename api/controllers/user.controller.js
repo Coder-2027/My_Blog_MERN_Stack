@@ -4,34 +4,28 @@ import { User } from "../models/user.model.js";
 export const updateUser = async (req, res, next) => {
   // console.log("Inside updateUser");
   if (req.user.userId !== req.params.userId) {
-    return res
-      .status(401)
-      .json({
-        success: false,
-        message: "You are not allowed to update this user",
-      });
+    return res.status(401).json({
+      success: false,
+      message: "You are not allowed to update this user",
+    });
   }
   // console.log("Hello");
   if (req.body.password) {
     if (req.body.password.length < 6) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Password must be at least 6 characters long",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters long",
+      });
     }
     req.body.password = bcryptjs.hashSync(req.body.password, 10);
   }
 
   if (req.body.username) {
     if (req.body.username.length > 20 || req.body.username.length < 7) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Username must be between 7 and 20 characters long",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Username must be between 7 and 20 characters long",
+      });
     }
     if (req.body.username.includes(" ")) {
       return res
@@ -71,24 +65,26 @@ export const updateUser = async (req, res, next) => {
       .status(200)
       .json({ success: true, message: "User successfully updated", user });
   } catch (error) {
-      next(error);
+    next(error);
   }
 };
 
 export const deleteUser = async (req, res, next) => {
-  console.log(req.user);
+  // console.log(req.user);
   // console.log(req.params);
   // console.log("Inside deleteUser");
-  if(req.user.userId != req.params.userId){
+  if (!req.user.isAdmin) {
     return res.status(404).json({
       success: false,
-      message: "You are not allowed to delete this user"
-    })
+      message: "You are not allowed to delete this user",
+    });
   }
-
+  // console.log("Hello");
   try {
-    await User.findByIdAndDelete(req.user.userId);
-    return res.status(200).json({ success: true, message: "User has been deleted" });
+    await User.findByIdAndDelete(req.params.userId);
+    return res
+      .status(200)
+      .json({ success: true, message: "User has been deleted" });
   } catch (error) {
     next(error);
   }
@@ -96,25 +92,32 @@ export const deleteUser = async (req, res, next) => {
 
 export const signout = (req, res, next) => {
   try {
-    return res.clearCookie('access_Token').status(200).json('User has been signed out')
+    return res
+      .clearCookie("access_Token")
+      .status(200)
+      .json("User has been signed out");
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 export const getUsers = async (req, res, next) => {
   // console.log("Hello");
-  if(!req.user.isAdmin){
+  if (!req.user.isAdmin) {
     return res.status(500).json({
       success: false,
-      message: "You are not authorized to view users"
-    })
+      message: "You are not authorized to view users",
+    });
   }
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
-    const sortDirection = req.query.sort === 'asc' ? 1:-1;
-    const users = await User.find().sort({updatedAt: sortDirection}).skip(startIndex).limit(limit).select("-password");
+    const sortDirection = req.query.sort === "asc" ? 1 : -1;
+    const users = await User.find()
+      .sort({ updatedAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit)
+      .select("-password");
 
     // console.log(posts);
     // const userWithoutPassword = users.map(user => {
@@ -132,15 +135,16 @@ export const getUsers = async (req, res, next) => {
 
     const lastMonthUsers = await User.countDocuments({
       createdAt: { $gte: oneMonthAgo },
-    })
+    });
 
     return res.status(200).json({
       users,
       totalUsers,
       lastMonthUsers,
     });
-
   } catch (error) {
     next(error);
   }
-}
+};
+
+export const deleteUsers = async (req, res, next) => {};

@@ -13,7 +13,25 @@ function DashUsers() {
   const [showModal, setShowModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
 
-  const handleDeleteUser = async () => {};
+  const handleDeleteUser = async () => {
+    // console.log(userIdToDelete);
+    try {
+      const res = await fetch(`/api/v1/user/delete/${userIdToDelete}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+      if(res.ok){
+        setUsers(prev => prev.filter(user => user._id !== userIdToDelete));
+        setShowModal(false);
+      }
+      else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -101,7 +119,13 @@ function DashUsers() {
                   </Table.Cell>
 
                   <Table.Cell>{post.username}</Table.Cell>
-                  <Table.Cell className="text-center">{post.isAdmin ? <FaCheck className='text-green-500'/> : <FaTimes className='text-red-500'/>}</Table.Cell>
+                  <Table.Cell className="text-center">
+                    {post.isAdmin ? (
+                      <FaCheck className="text-green-500" />
+                    ) : (
+                      <FaTimes className="text-red-500" />
+                    )}
+                  </Table.Cell>
 
                   <Table.Cell>
                     <span
