@@ -80,7 +80,7 @@ function CreatePost() {
       // console.log("hello");
 
       const data = await res.json();
-      // console.log(res.ok);
+      // console.log(data);
       if(!res.ok){
         setPublishError(data.message);
         return;
