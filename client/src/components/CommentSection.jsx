@@ -73,7 +73,7 @@ function CommentSection({ postId }) {
         const data = await res.json();
         // console.log(data.comment.likes.length);
         setComments(
-          comments.map((c) => (
+          comments.map((c) =>
             // console.log(typeof c);
             c._id === commentId
               ? {
@@ -82,12 +82,25 @@ function CommentSection({ postId }) {
                   numberOfLikes: data.comment.numberOfLikes,
                 }
               : c
-          ))
+          )
         );
       }
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  const handleEdit = async (comment, editedContent) => {
+    setComments(
+      comments.map((c) =>
+        c._id === comment._id
+          ? {
+              ...c,
+              content: editedContent,
+            }
+          : c
+      )
+    );
   };
 
   return (
@@ -154,7 +167,7 @@ function CommentSection({ postId }) {
             </div>
           </div>
           {comments?.map((comment) => (
-            <Comment key={comment?._id} comment={comment} onLike={handleLike} />
+            <Comment key={comment?._id} comment={comment} onLike={handleLike} onEdit={handleEdit}/>
           ))}
         </>
       )}
