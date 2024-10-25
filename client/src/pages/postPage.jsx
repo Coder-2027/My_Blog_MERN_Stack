@@ -4,13 +4,33 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import CallToAction from "../components/CallToAction";
 import CommentSection from "../components/CommentSection";
+import PostCard from "../components/PostCard";
 
 function PostPage() {
   const { postSlug } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [post, setPost] = useState(null);
+  const [recentPosts, setRecentPosts] = useState(null);
   //   console.log(post);
+
+  useEffect(() => {
+    try {
+      const fetchRecentPosts = async () => {
+        const res = await fetch("/api/v1/post/getPosts?limit=3");
+        const data = await res.json();
+        if (!res.ok) {
+          console.log(data.message);
+          return;
+        } else {
+          setRecentPosts(data.posts);
+        }
+      }
+      fetchRecentPosts();
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [])
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -77,6 +97,18 @@ function PostPage() {
       </div>
 
       <CommentSection postId={post._id} />
+
+      <div className="flex flex-col justify-center items-center mb-5">
+        <h1 className="text-xl mt-5">Recent Articles</h1>
+        <div className="flex flex-wrap gap-5 mt-5 justify-center">
+          {
+            recentPosts && 
+            recentPosts.map(post => (
+              <PostCard key={post._id} post={post} />
+            ))
+          }
+        </div>
+      </div>
     </main>
   );
 }
