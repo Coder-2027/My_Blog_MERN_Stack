@@ -25,18 +25,18 @@ export const create = async (req, res, next) => {
 };
 
 export const getPosts = async (req, res, next) => {
-  // console.log(req.query.postId);
+  console.log(req.query);
   // console.log("Hello");
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.order === 'asc' ? 1:-1;
     const posts = await Post.find(
-      {...(req.query.userId && {userId: req.query.userId}),
-      ...(req.query.category && {category: req.query.category}),
-      ...(req.query.slug && {slug: req.query.slug}),
-      ...(req.query.postId && {_id: req.query.postId}),
-      ...(req.query.searchTerm && {
+      {...(req.query.userId && req.query.userId != 'null' && {userId: req.query.userId}),
+      ...(req.query.category && req.query.category != 'null' && req.query.category != 'uncategorized' && {category: req.query.category}),
+      ...(req.query.slug && req.query.slug != 'null' && {slug: req.query.slug}),
+      ...(req.query.postId && req.query.postId != 'null' && {_id: req.query.postId}),
+      ...(req.query.searchTerm && req.query.searchTerm != 'null' && {
         $or: [
           { title: { $regex: req.query.searchTerm, $options: 'i' } },
           { content: { $regex: req.query.searchTerm, $options: 'i' } },
