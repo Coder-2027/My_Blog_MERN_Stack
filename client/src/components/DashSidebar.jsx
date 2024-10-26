@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "flowbite-react";
-import { HiUser, HiArrowSmRight, HiDocumentText, HiOutlineUser, HiAnnotation } from "react-icons/hi";
+import {
+  HiUser,
+  HiArrowSmRight,
+  HiDocumentText,
+  HiOutlineUser,
+  HiAnnotation,
+  HiChartPie,
+} from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signoutSuccess } from "../redux/user/userSlice";
@@ -46,6 +53,19 @@ function DashSidebar() {
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
+          {currentUser.isAdmin && (
+            <Link to={"/dashboard?tab=dash"}>
+              <Sidebar.Item
+                active={tab == "dash"}
+                icon={HiChartPie}
+                // label={"Admin"}
+                // labelColor="dark"
+                as="div"
+              >
+                Dashboard
+              </Sidebar.Item>
+            </Link>
+          )}
           <Link to={"/dashboard?tab=profile"}>
             <Sidebar.Item
               active={tab == "profile"}
@@ -85,7 +105,7 @@ function DashSidebar() {
               </Sidebar.Item>
             </Link>
           )}
-          
+
           {currentUser.isAdmin && (
             <Link to={"/dashboard?tab=comments"}>
               <Sidebar.Item
