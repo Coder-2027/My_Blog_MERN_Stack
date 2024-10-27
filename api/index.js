@@ -6,9 +6,11 @@ import authRoutes from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
 import postRouter from './routes/post.route.js';
 import commentRouter from './routes/comment.route.js'
+import path from 'path';
 
 const app = express();
 const port = process.env.PORT || 4000;
+const __dirname = path.resolve();
 
 mongoose
   .connect(`${process.env.MONGODB_URL}/${process.env.DB_NAME}`)
@@ -26,6 +28,11 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/post", postRouter);
 app.use("/api/v1/comment", commentRouter);
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/client/dist/index.html'));
+})
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
